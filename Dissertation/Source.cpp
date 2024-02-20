@@ -15,7 +15,7 @@ using namespace std;
 
 complex t;
 double pi = 4.0 * atan(1.0), k0 = 2 * pi;
-const int n = 16, N = 2 * n * n;  // n - число разбиения
+const int n = 4, N = 2 * n * n;  // n - число разбиения
 //const double lymda = 0.5;
 const double GranA1 = 0.0, GranA2 = 2.0;
 const double GranB1 = 1.0, GranB2 = 3.0;
@@ -441,7 +441,7 @@ void print_un(int pn, int num) {
 void Zapis_v_File_Visit(int pn) {
 	//std::ofstream File3("../Matrix_3.txt");
 	FILE* tab_file1;
-	fopen_s(&tab_file1, "C:/Users/neste/source/Repos/Diplom/resultVIZIT.txt", "w");
+	fopen_s(&tab_file1, "resultVIZIT.txt", "w");
 	//int pn = 50;
 	double t1, t2;
 	// printf("\n");
@@ -467,7 +467,7 @@ void Zapis_v_File_Visit(int pn) {
 }
 void Zapis_v_File_Visit_VNE() {
 	FILE* tab_file2;
-	fopen_s(&tab_file2, "C:/Users/neste/source/Repos/Diplom/resultVIZIT_VNE.txt", "w");
+	fopen_s(&tab_file2, "resultVIZIT_VNE.txt", "w");
 	double x_vne = 0.0, y_vne = 0.0, z_vne = 1.0;
 	double field_vne;
 	for (int i = -150; i < 150; i++)
@@ -571,11 +571,11 @@ int main() {
 
 
 			}
-			if (world_rank == 4)
+			if (world_rank == 0)
 			{
 				A[i][N] = Integral_voln(i1, j1, 1);
 			}
-			if (world_rank == 5)
+			if (world_rank == 1)
 			{
 				A[i + n * n][N] = Integral_voln(i1, j1, 0);
 			}
@@ -615,7 +615,7 @@ int main() {
 		//Zapis_v_File(n, 1);
 		//print_un(n, 0);
 		Zapis_v_File_Visit(50);
-		Zapis_v_File_Visit_VNE();
+		/*Zapis_v_File_Visit_VNE();*/
 
 		endtime = MPI_Wtime();
 		std::printf("Zapis zanyala %f seconds\n", endtime - starttimeZ);
