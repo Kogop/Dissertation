@@ -123,7 +123,7 @@ complex Ker(double u1, double v1, double u2, double v2, int num1, int num2) {   
 	double rho = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2));
 	if (rho > 1e-5)
 	{
-		return  exp(_i * k0 * rho) / (4.0 * pi * rho);
+		return  exp(_i * k0 * rho) / (4.0 * pi * rho); // это менять надо
 	}
 	else
 	{
