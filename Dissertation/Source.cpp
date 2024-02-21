@@ -15,7 +15,7 @@ using namespace std;
 
 complex t;
 double pi = 4.0 * atan(1.0), k0 = 2 * pi;
-const int n = 4, N = 2 * n * n;  // n - число разбиения
+const int n = 4, N =  n;  // n - число разбиения
 //const double lymda = 0.5;
 const double GranA1 = 0.0, GranA2 = 2.0;
 const double GranB1 = 1.0, GranB2 = 3.0;
@@ -119,15 +119,15 @@ complex Ker(double u1, double v1, double u2, double v2, int num1, int num2) {   
 	double x1 = X_Param(u1, v1, num1);
 	double y1 = Y_Param(u1, v1, num1);
 	//double z1 = Z_Param(u1, v1, num1);
-	double x2 = X_Param(u2, v2, num2);
-	double y2 = Y_Param(u2, v2, num2);
+	/*double x2 = X_Param(u2, v2, num2);
+	double y2 = Y_Param(u2, v2, num2);*/
 	//double z2 = Z_Param(u2, v2, num2);
 	//double rho = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2));
 
 
-	double x = 2.5;
-	double j0_result = std::cyl_bessel_j(0, x); // Bessel function of the first kind of order zero
-	double j1_result = std::cyl_bessel_j(1, x); // Bessel function of the first kind of order one
+	// double x = 2.5;
+	double j0_result = std::cyl_bessel_j(0, x1); // Bessel function of the first kind of order zero
+	double j1_result = std::cyl_bessel_j(1, y1); // Bessel function of the first kind of order one
 	complex J;
 		J = (j0_result, j1_result);
 	if (J != (complex)(0, 0))
@@ -221,7 +221,7 @@ complex Integral_voln(int i1, int j1, int num) {
 			t1 = aa1 + (i1 + 0.5) * h1;
 			t2 = cc1 + (i2 + 0.5) * h2;
 
-			in = in + U0(t1, t2, num) * sqrtEGF2(t1, t2, num); // здесь тоже убрать корень.
+			in = in + U0(t1, t2, num); //  * sqrtEGF2(t1, t2, num) здесь тоже убрать корень.
 		}
 	}
 	// in = in * h1 * h2;
@@ -297,9 +297,9 @@ complex Integral_ecran(int i1, int j1, int i2, int j2, int num1, int num2) {
 
 					t21 = aa2 + (ii + 0.5) * h21;
 					t22 = cc2 + (kk + 0.5) * h22;
-					rho = sqrt((t11 - t21) * (t11 - t21) + (t12 - t22) * (t12 - t22));
+					rho = sqrt((t11 - t21) * (t11 - t21) + (t12 - t22) * (t12 - t22)); // что это? 
 					//cout << sqrtEGF2(t11, t12, num1) << endl;
-					if (rho > 1e-7) in = in + Ker(t11, t12, t21, t22, num1, num2) * sqrtEGF2(t11, t12, num1) * sqrtEGF2(t21, t22, num2); // убрать эти два корня? надо по-любому
+					if (rho > 1e-7) in = in + Ker(t11, t12, t21, t22, num1, num2); //  * sqrtEGF2(t11, t12, num1) * sqrtEGF2(t21, t22, num2) убрать эти два корня? надо по-любому
 				}
 			}
 		}
