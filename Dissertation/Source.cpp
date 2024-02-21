@@ -110,20 +110,30 @@ double sqrtEGF2(double u, double v,/* double u2, double v2,*/ int num) {
 }
 
 
+
+
 //ядро
 complex Ker(double u1, double v1, double u2, double v2, int num1, int num2) {   //добавить z1, z2, тк теперь будет объемное тело
 	//return(_i * (x1 - y2));
 	//double rho = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	double x1 = X_Param(u1, v1, num1);
 	double y1 = Y_Param(u1, v1, num1);
-	double z1 = Z_Param(u1, v1, num1);
+	//double z1 = Z_Param(u1, v1, num1);
 	double x2 = X_Param(u2, v2, num2);
 	double y2 = Y_Param(u2, v2, num2);
-	double z2 = Z_Param(u2, v2, num2);
-	double rho = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2));
-	if (rho > 1e-5)
+	//double z2 = Z_Param(u2, v2, num2);
+	//double rho = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2));
+
+
+	double x = 2.5;
+	double j0_result = std::cyl_bessel_j(0, x); // Bessel function of the first kind of order zero
+	double j1_result = std::cyl_bessel_j(1, x); // Bessel function of the first kind of order one
+	complex J;
+		J = (j0_result, j1_result);
+	if (J != (complex)(0, 0))
 	{
-		return  exp(_i * k0 * rho) / (4.0 * pi * rho); // это менять надо
+		return  J;
+		//return  exp(_i * k0 * rho) / (4.0 * pi * rho); // это менять надо
 	}
 	else
 	{
@@ -211,7 +221,7 @@ complex Integral_voln(int i1, int j1, int num) {
 			t1 = aa1 + (i1 + 0.5) * h1;
 			t2 = cc1 + (i2 + 0.5) * h2;
 
-			in = in + U0(t1, t2, num) * sqrtEGF2(t1, t2, num);
+			in = in + U0(t1, t2, num) * sqrtEGF2(t1, t2, num); // здесь тоже убрать корень.
 		}
 	}
 	// in = in * h1 * h2;
@@ -289,7 +299,7 @@ complex Integral_ecran(int i1, int j1, int i2, int j2, int num1, int num2) {
 					t22 = cc2 + (kk + 0.5) * h22;
 					rho = sqrt((t11 - t21) * (t11 - t21) + (t12 - t22) * (t12 - t22));
 					//cout << sqrtEGF2(t11, t12, num1) << endl;
-					if (rho > 1e-7) in = in + Ker(t11, t12, t21, t22, num1, num2) * sqrtEGF2(t11, t12, num1) * sqrtEGF2(t21, t22, num2);
+					if (rho > 1e-7) in = in + Ker(t11, t12, t21, t22, num1, num2) * sqrtEGF2(t11, t12, num1) * sqrtEGF2(t21, t22, num2); // убрать эти два корня? надо по-любому
 				}
 			}
 		}
@@ -452,11 +462,11 @@ void Zapis_v_File_Visit(int pn) {
 			// printf("%6.3f ", abs(un(t1, t2)));
 			//File3 << X_Param(t1, t2, 0) << " " << Y_Param(t1, t2, 0) << " " << Z_Param(t1, t2, 0) << " " << abs(un(t1, t2, 0)) << "\n";
 			fprintf(tab_file1, "%5.5f\t%5.5f\t%5.5f\t%5.5f\n", X_Param(t1, t2, 0), Y_Param(t1, t2, 0), Z_Param(t1, t2, 0), abs(un(t1, t2, 0)));
-			t1 = GranA1 + (GranB1 - GranA1) / pn * i1;
-			t2 = GranC1 + (GranD1 - GranC1) / pn * i2;
-			// printf("%6.3f ", abs(un(t1, t2)));
-			//File3 << X_Param(t1, t2, 1) << " " << Y_Param(t1, t2, 1) << " " << Z_Param(t1, t2, 1) << " " << abs(un(t1, t2, 1)) << "\n";
-			fprintf(tab_file1, "%5.5f\t%5.5f\t%5.5f\t%5.5f\n", X_Param(t1, t2, 1), Y_Param(t1, t2, 1), Z_Param(t1, t2, 1), abs(un(t1, t2, 1)));
+			//t1 = GranA1 + (GranB1 - GranA1) / pn * i1;
+			//t2 = GranC1 + (GranD1 - GranC1) / pn * i2;
+			//// printf("%6.3f ", abs(un(t1, t2)));
+			////File3 << X_Param(t1, t2, 1) << " " << Y_Param(t1, t2, 1) << " " << Z_Param(t1, t2, 1) << " " << abs(un(t1, t2, 1)) << "\n";
+			//fprintf(tab_file1, "%5.5f\t%5.5f\t%5.5f\t%5.5f\n", X_Param(t1, t2, 1), Y_Param(t1, t2, 1), Z_Param(t1, t2, 1), abs(un(t1, t2, 1)));
 
 		}
 
@@ -552,7 +562,7 @@ int main() {
 					{
 						A[i][j] = Integral_ecran(i1, j1, i2, j2, 1, 1);
 					}
-					if (world_rank == 1)
+					/*if (world_rank == 1)
 					{
 						A[i][j + n * n] = Integral_ecran(i1, j1, i2, j2, 1, 0);
 					}
@@ -563,7 +573,7 @@ int main() {
 					if (world_rank == 3)
 					{
 						A[i + n * n][j + n * n] = Integral_ecran(i1, j1, i2, j2, 0, 0);
-					}
+					}*/
 
 
 
@@ -575,10 +585,10 @@ int main() {
 			{
 				A[i][N] = Integral_voln(i1, j1, 1);
 			}
-			if (world_rank == 1)
+			/*if (world_rank == 1)
 			{
 				A[i + n * n][N] = Integral_voln(i1, j1, 0);
-			}
+			}*/
 
 		}
 	}
